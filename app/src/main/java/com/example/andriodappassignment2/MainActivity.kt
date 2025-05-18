@@ -31,14 +31,29 @@ class MainActivity : AppCompatActivity() {
         val answerTrueButton: Button = findViewById(R.id.answerTrueButton)
         val answerFalseButton: Button = findViewById(R.id.answerFalseButton)
         val answerDisplayMessage: TextView = findViewById(R.id.answerDisplayMessage)
-        answerDisplayMessage.visibility = View.INVISIBLE
+        val continueQuizButton: Button = findViewById(R.id.continueQuizButton)
+        val summaryPage: TextView = findViewById(R.id.summaryPage)
+        val restartQuiz: Button = findViewById(R.id.restartQuiz)
 
-        // delcaring our global user answer variables
-        var userHasAnsweredQuestion: Boolean = false
+        // setting our answer pop up for "Correct!" or "Incorrect" and continue button as hidden
+        answerDisplayMessage.visibility = View.INVISIBLE
+        continueQuizButton.visibility = View.INVISIBLE
+
+        // setting our summaryPage and retake quiz button as hidden initially
+        summaryPage.visibility = View.INVISIBLE
+        restartQuiz.visibility = View.INVISIBLE
+
+        // keeping an index count of which question we are on
+        var questionIndex: Int = 0
+        // keeping track of our user's score with another counter
+        var scoreCounter: Int = 0
+
+        // declaring our global user answer variable
         var usersAnswer: Boolean = false
 
-        // declaring out 2 parllel arrays
+        // declaring out 2 parallel arrays
         // questionsArray = 5 true/false type questions
+        // Flashcard questions: add rerencing for questions (https://www.cosmopolitan.com/uk/entertainment/a32612392/best-true-false-quiz-questions/)
         val questionsArray: Array<String> = arrayOf(
             "The star sign Aquarius is represented by a tiger",
             "The Battle Of Hastings took place in 1066",
@@ -56,13 +71,50 @@ class MainActivity : AppCompatActivity() {
             false
         )
 
-        fun showQuizSummaryFunction(){
+        // SECTION FOR OUR FUNCTIONS
+
+        fun showSummaryPage(){
+            // here we should show all the questions and correct and incorrect answers
+            // show our summaryPage pop up
+            summaryPage.visibility = View.INVISIBLE
+            summaryPage.setBackgroundColor(Color.WHITE)
+            restartQuiz.visibility = View.VISIBLE
+
+            // first lets show our overall score
+            var summaryTextContent = "Score: ${scoreCounter}/5"
+
+            summaryPage.setText(summaryTextContent)
+        }
+
+        // our function to display each question in our array and keep track of the score
+        fun showFlashCards(indexCounter: Int){
+            // here we need to make sure the indexCounter is withing our range of questions
+            if(indexCounter < questionsArray.size){
+                // if it is then we show our question using our indexCounter
+
+                // 1. display our initial score text with our inital score count
+                var initialUserScore = "Score: ${scoreCounter}/5"
+                userScoreTextBox.setText(initialUserScore)
+
+                // 2. show the question in the question text box using our index counter
+                var questionToShow = questionsArray[indexCounter]
+                questionsTextBox.setText((questionToShow))
+
+                // 3. set out questionIndex to our indexCounter so that we can access the next question
+                // in the array the next time the function is called
+                questionIndex = indexCounter
+
+            } else{
+                // else we have shown all of our questions and it's time to show our summary page
+                showSummaryPage()
+            }
 
         }
 
         fun showCorrectAnswerPopUpMessage(){
-            // first we unhide our answerDisplayMessage text box
+            // first we unhide our answerDisplayMessage text box and continue button
             answerDisplayMessage.visibility = View.VISIBLE
+            continueQuizButton.visibility = View.VISIBLE
             // we give our answer message a green background :)
             answerDisplayMessage.setBackgroundColor(Color.GREEN)
             // then we set our text content to "Correct!"
@@ -70,75 +122,85 @@ class MainActivity : AppCompatActivity() {
         }
 
         fun showIncorrectAnswerPopUpMessage(){
-            // show our answer pop up
+            // first we unhide our answerDisplayMessage text box and continue button
             answerDisplayMessage.visibility = View.VISIBLE
-            // set our background to red
+            continueQuizButton.visibility = View.VISIBLE
+            // we give our answer message a red background
             answerDisplayMessage.setBackgroundColor(Color.RED)
-            // give our text content "Incorrect"
+            // then we set our text content to "Incorrect"
             answerDisplayMessage.setText("Incorrect")
         }
 
-        // Flashcard questions: add rerencing for questions (https://www.cosmopolitan.com/uk/entertainment/a32612392/best-true-false-quiz-questions/)
 
-        fun showFlashCards(){
-            // display our initial score text with our inital score count
-            var indexCounter: Int = 0
-            var scoreCounter: Int = 0
-            var initialUserScore = "Score: ${scoreCounter}/5"
-            userScoreTextBox.setText(initialUserScore)
+        // SECTION FOR OUR BUTTON ON CLICK FUNCTIONS:
 
-            // show our first question in our parallel array in our questions text box
-            questionsTextBox.setText(questionsArray[indexCounter]);
+        restartQuiz.setOnClickListener(){
+            // hide our summary page
+            summaryPage.visibility = View.INVISIBLE
+            restartQuiz.visibility = View.INVISIBLE
 
-            // if our user has clicked on one of the buttons then we can check their answer
-            if (userHasAnsweredQuestion){
-                // here we can access our correct answer to the question
-                // by using the same indexCounter from our questionsArray for our answersArray
-                // due to the arrays being parallel
-                var answerToQuestion = answersArray[indexCounter]
+            // reset our question counter
+            questionIndex = 0
+            // reset our score counter
+            scoreCounter = 0
 
-                if(answerToQuestion == usersAnswer){
-                    // if our users answer matches the correct answer
-                    // then we increase our scoreCounter to update our user score
-                    scoreCounter++
-                    // and we can then show our "Correct!" message
-                    showCorrectAnswerPopUpMessage()
-
-                } else{
-                    // else the user got the question wrong
-                    // so we leave our scoreCounter and show our "Incorrect" message
-                    showIncorrectAnswerPopUpMessage()
-                }
-
-                // here we increment our indexCounter to move to the next question
-                indexCounter++
-
-                // lastly we need to call our function again to continue our loop
-                // but only up until the last question in our array
-                // so while we are within our array size we recall our function
-                if (indexCounter < questionsArray.size){
-                    showFlashCards()
-
-                } else {
-                    // else we call our showQuizSummaryFunction
-                    showQuizSummaryFunction()
-                }
-            }
+            // call our showFlashCards function with the reset question Index
+            showFlashCards(questionIndex)
         }
 
-        // giving our true or false answer buttons onclick event listeners to set
-        // the userHasAnsweredQuestion to true and usersAnswer to true or false
+        // here we add a onclick event listerner continue to the next question in the quiz
+        continueQuizButton.setOnClickListener {
+            // hide the answer pop up message and the continue button
+            answerDisplayMessage.visibility = View.INVISIBLE
+            continueQuizButton.visibility = View.INVISIBLE
+
+            // continue quiz by incrementing the question index
+            // and then supplying the questionIndex back to our showFlashCards function
+            // to show the next set of questions
+            questionIndex++
+            showFlashCards(questionIndex)
+        }
+
+        // give our true button an onclick event listener to set the user's answer to true
+        // and then check the user's answer against the correct answer
         answerTrueButton.setOnClickListener(){
             // if they click true then we set our usersAnswer to true
             usersAnswer = true
-            // set our user has answered question boolean to true to continue to our next question
-            userHasAnsweredQuestion = true
+
+            var correctAnswer = answersArray[questionIndex]
+
+            if(usersAnswer == correctAnswer){
+                // if they got the answer correct then we increase the score
+                scoreCounter++
+                // then we show the correct pop up
+                showCorrectAnswerPopUpMessage()
+
+            } else{
+                // else we don't increase the score
+                // and show them the incorrect pop up message
+                showIncorrectAnswerPopUpMessage()
+            }
         }
 
+        // give our false button an onclick event listener to set the user's answer to false
+        // and then check the user's answer against the correct answer
         answerFalseButton.setOnClickListener(){
             // else if they click on false then we set our usersAnswer to false
             usersAnswer = false
-            userHasAnsweredQuestion = true
+
+            var correctAnswer = answersArray[questionIndex]
+
+            if(usersAnswer == correctAnswer){
+                // if they got the answer correct then we increase the score
+                scoreCounter++
+                // then we show the correct pop up
+                showCorrectAnswerPopUpMessage()
+
+            } else{
+                // else we don't increase the score
+                // and show them the incorrect pop up message
+                showIncorrectAnswerPopUpMessage()
+            }
         }
 
 
@@ -159,7 +221,9 @@ class MainActivity : AppCompatActivity() {
             answerFalseButton.visibility = View.VISIBLE
             // show our true or false answer buttons
             // then call our function to show our flashcard question section
-            showFlashCards()
+            // using our index of 0 to show our first question
+            var indexCounter: Int = 0
+            showFlashCards(indexCounter)
         }
 
 
