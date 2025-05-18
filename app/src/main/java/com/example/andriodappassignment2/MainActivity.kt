@@ -34,14 +34,19 @@ class MainActivity : AppCompatActivity() {
         val continueQuizButton: Button = findViewById(R.id.continueQuizButton)
         val summaryPage: TextView = findViewById(R.id.summaryPage)
         val restartQuiz: Button = findViewById(R.id.restartQuiz)
+        val reviewButton: Button = findViewById(R.id.reviewButton)
+        val backToSummaryButton: Button = findViewById(R.id.backToSummaryButton)
 
         // setting our answer pop up for "Correct!" or "Incorrect" and continue button as hidden
         answerDisplayMessage.visibility = View.INVISIBLE
         continueQuizButton.visibility = View.INVISIBLE
 
-        // setting our summaryPage and retake quiz button as hidden initially
+        // setting our summaryPage, retake quiz, review, and back to summary buttons as hidden initially
         summaryPage.visibility = View.INVISIBLE
         restartQuiz.visibility = View.INVISIBLE
+        reviewButton.visibility = View.INVISIBLE
+        backToSummaryButton.visibility = View.INVISIBLE
+
 
         // keeping an index count of which question we are on
         var questionIndex: Int = 0
@@ -73,17 +78,33 @@ class MainActivity : AppCompatActivity() {
 
         // SECTION FOR OUR FUNCTIONS
 
+        // Score screen
+        // after final question score screen loaded
+        // shows total score
         fun showSummaryPage(){
             // here we should show all the questions and correct and incorrect answers
             // show our summaryPage pop up
             summaryPage.visibility = View.VISIBLE
             summaryPage.setBackgroundColor(Color.WHITE)
             restartQuiz.visibility = View.VISIBLE
+            reviewButton.visibility = View.VISIBLE
 
             // first lets show our overall score
-            var summaryTextContent = "Score: ${scoreCounter}/5"
+            var summaryTextContent = "Overall Score: ${scoreCounter}/5"
+
+            // display feedback based on the total score:
+            if(scoreCounter >= 3){
+                // scores of 3 or more = "Great Job!"
+                // here we display our message on a new line
+                summaryTextContent += "\n Great Job!"
+
+            } else{
+                // scores of less than 3 = "Keep Practising!"
+                summaryTextContent += "\n Keep Practising!"
+            }
 
             summaryPage.setText(summaryTextContent)
+            summaryPage.textSize = 32f
         }
 
         // our function to display each question in our array and keep track of the score
@@ -139,11 +160,55 @@ class MainActivity : AppCompatActivity() {
 
 
         // SECTION FOR OUR BUTTON ON CLICK FUNCTIONS:
+        backToSummaryButton.setOnClickListener(){
+            // hide our back to summary button before reshowing our summary
+            backToSummaryButton.visibility = View.INVISIBLE
+            showSummaryPage()
+        }
+
+        reviewButton.setOnClickListener(){
+            // hide our reviewButton and show back to summary button
+            reviewButton.visibility = View.INVISIBLE
+            backToSummaryButton.visibility = View.VISIBLE
+            //displays screen with all questions and correct/incorrect answers
+            // first we clear the the summary page text content
+            summaryPage.setText("")
+            // set our summary page font size smaller
+            summaryPage.textSize = 18f
+
+            // lets then declare a string to hold all of our questions and answers
+            var questionsAndAnswersReview = ""
+            // then we loop through all of the questions
+            var summaryCounter = 0
+            for(question in questionsArray){
+                // using our summaryCounter we can show the answer next to the question
+                // first we show our question number by plussing one to our 0 based index
+                var questionNumber = summaryCounter + 1
+
+                // get our answer by using the summaryCounter
+                var answerToCurrentQuestion = answersArray[summaryCounter]
+                // place our answer in string to display alongside the current question
+                var correctAnswer = "Answer: $answerToCurrentQuestion"
+
+                // display each of our questions on a new line
+                // alongside the corresponsing correct answer by accessing our parallel answers array using our index counter
+                questionsAndAnswersReview += "\nQ$questionNumber $question \n$correctAnswer \n"
+
+                // then we increment the summary counter to access the next answer from our answers array
+                // for our next question
+                summaryCounter++
+            }
+
+            // lastly we display the review on our summary page
+            summaryPage.setText(questionsAndAnswersReview)
+        }
 
         restartQuiz.setOnClickListener(){
-            // hide our summary page
+            // hide our summary page and buttons
             summaryPage.visibility = View.INVISIBLE
             restartQuiz.visibility = View.INVISIBLE
+            reviewButton.visibility = View.INVISIBLE
+            backToSummaryButton.visibility = View.INVISIBLE
 
             // reset our question counter
             questionIndex = 0
@@ -231,17 +296,5 @@ class MainActivity : AppCompatActivity() {
             var indexCounter: Int = 0
             showFlashCards(indexCounter)
         }
-
-
-
-        // 3. Score screen logic
-        // after final question score screen loaded
-        // shows total score
-        // display feedback based on the total score:
-        // scores of 3 or more = "Great Job!"
-        // scores of less than 3 = "Keep Practising!"
-        // "Review" button:
-        // -> displays screen with all questions and correct/incorrect answers
-
     }
 }
