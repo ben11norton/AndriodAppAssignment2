@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         fun showSummaryPage(){
             // here we should show all the questions and correct and incorrect answers
             // show our summaryPage pop up
-            summaryPage.visibility = View.INVISIBLE
+            summaryPage.visibility = View.VISIBLE
             summaryPage.setBackgroundColor(Color.WHITE)
             restartQuiz.visibility = View.VISIBLE
 
@@ -119,6 +119,9 @@ class MainActivity : AppCompatActivity() {
             answerDisplayMessage.setBackgroundColor(Color.GREEN)
             // then we set our text content to "Correct!"
             answerDisplayMessage.setText("Correct!")
+            // give our message a large font and make the text in the center of the pop up
+            answerDisplayMessage.textSize = 32f
+            answerDisplayMessage.textAlignment = View.TEXT_ALIGNMENT_CENTER
         }
 
         fun showIncorrectAnswerPopUpMessage(){
@@ -129,6 +132,9 @@ class MainActivity : AppCompatActivity() {
             answerDisplayMessage.setBackgroundColor(Color.RED)
             // then we set our text content to "Incorrect"
             answerDisplayMessage.setText("Incorrect")
+            // give our message a large font and make the text in the center of the pop up
+            answerDisplayMessage.textSize = 32f
+            answerDisplayMessage.textAlignment = View.TEXT_ALIGNMENT_CENTER
         }
 
 
