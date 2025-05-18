@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             reviewButton.visibility = View.VISIBLE
 
             // first lets show our overall score
-            var summaryTextContent = "Overall Score: ${scoreCounter}/5"
+            var summaryTextContent = "Overall Score: ${scoreCounter}/5\n"
 
             // display feedback based on the total score:
             if(scoreCounter >= 3){
@@ -103,7 +103,10 @@ class MainActivity : AppCompatActivity() {
                 summaryTextContent += "\n Keep Practising!"
             }
 
+            // then we give our summary page our summary text content
             summaryPage.setText(summaryTextContent)
+            // along with some center text styling and large font size :)
+            summaryPage.textAlignment = View.TEXT_ALIGNMENT_CENTER
             summaryPage.textSize = 32f
         }
 
@@ -201,6 +204,8 @@ class MainActivity : AppCompatActivity() {
 
             // lastly we display the review on our summary page
             summaryPage.setText(questionsAndAnswersReview)
+            // and we make our text content justified to align-start for better readability
+            summaryPage.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
         }
 
         restartQuiz.setOnClickListener(){
