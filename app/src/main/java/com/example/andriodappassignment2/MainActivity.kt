@@ -58,14 +58,13 @@ class MainActivity : AppCompatActivity() {
 
         // declaring out 2 parallel arrays
         // questionsArray = 5 true/false type questions
-        // Flashcard questions: add rerencing for questions (https://www.cosmopolitan.com/uk/entertainment/a32612392/best-true-false-quiz-questions/)
         val questionsArray: Array<String> = arrayOf(
             "The star sign Aquarius is represented by a tiger",
             "The Battle Of Hastings took place in 1066",
             "H&M stands for Hennes & Mauritz",
             "K is worth four points in Scrabble",
             "In a deck of cards, the king has a moustache"
-        )
+        ) // (Baxter-Wright D.,Scott D.,  Williams S., 2024)
 
         // answersArray = 5 corresponsing answers
         val answersArray: Array<Boolean> = arrayOf(
@@ -301,5 +300,9 @@ class MainActivity : AppCompatActivity() {
             var indexCounter: Int = 0
             showFlashCards(indexCounter)
         }
+
+        // REFERENCE
+        // Baxter-Wright D.,Scott D.,  Williams S., 2024. 110 best true or false quiz questions for an easier take on game night.
+        // Available online: https://www.cosmopolitan.com/uk/entertainment/a32612392/best-true-false-quiz-questions/
     }
 }
